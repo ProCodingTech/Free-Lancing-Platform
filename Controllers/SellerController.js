@@ -137,11 +137,32 @@ const updateProfile = async (req, res) => {
     }
 }
 
+const deleteMyAccount =  async (req, res) =>{
+    try{
+        let userId = res.locals.userId;
+        // console.log("USer Id: ",userId);
+
+        let delUser = await mongoSeller.findByIdAndDelete(userId);
+        // console.log("User: ",delUser);
+        if(delUser){
+            let name = delUser.FullName;
+            res.status(200).json({"User: ": name , "Deleted Staus: " : true})
+        }
+        else{
+            res.status(404).json({"Message":"Error! Deleting User."})
+        }
+    }
+    catch(error){
+        console.log(error);
+    }
+}
+
 module.exports = {
     createSeller,
     Login,
     searchUser,
     getSellerById,
     getMyProfile,
-    updateProfile
+    updateProfile,
+    deleteMyAccount
 }

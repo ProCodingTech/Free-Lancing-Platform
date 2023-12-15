@@ -5,6 +5,7 @@ const app = express();
 require("dotenv").config();
 
 const sellerRoutes = require("./Routes/SellerRoutes")
+const projectRoutes = require("./Routes/ProjectRoutes")
 
 app.use(express.json());
 app.use(cors());
@@ -14,6 +15,7 @@ app.listen(3100, ()=>{
 })
 
 app.use("/seller" ,sellerRoutes)
+app.use("/seller/projects" ,projectRoutes)
 
 mongoose.connect(process.env.MONGO_STRING).then(()=>{
     console.log("DB Connected");

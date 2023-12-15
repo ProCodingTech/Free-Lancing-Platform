@@ -1,4 +1,4 @@
-const {createSeller, Login, searchUser, getSellerById, getMyProfile, updateProfile} = require("../Controllers/SellerController")
+const {createSeller, Login, searchUser, getSellerById, getMyProfile, updateProfile, deleteMyAccount} = require("../Controllers/SellerController")
 const {AuthenticateUser} = require("../MiddleWare/AuthenticateUser")
 const express = require("express");
 
@@ -9,5 +9,6 @@ router.get("/searchUser", AuthenticateUser , searchUser)
 router.get("/getSellerById/:id", AuthenticateUser , getSellerById)
 router.get("/getMyProfile", AuthenticateUser , getMyProfile)
 router.patch("/updateProfile", AuthenticateUser , updateProfile)
+router.delete("/deleteMyAccount", AuthenticateUser , deleteMyAccount)
 
 module.exports = router;

@@ -1,11 +1,14 @@
 const mongoose = require("mongoose")
 
 const reviews = new mongoose.Schema({
-    UserId:String,//User That has given review
+    reviewerId:String,//User That has given review
+    reviewerName:String,
     Comment:String,
     Rating:Number,
 });
 const userSchema = mongoose.Schema({
+    sellerId:String,
+    sellerName:String,
     Title: String,
     ImageUrl:[String],
     ImagePaths:[String],
