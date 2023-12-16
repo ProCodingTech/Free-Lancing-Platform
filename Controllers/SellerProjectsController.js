@@ -203,7 +203,7 @@ const addReviewById = async(req, res)=>{
             let sellerId = findProject.sellerId;
             if (reviewerId !== sellerId){
                 await mongoProject.findOneAndUpdate(
-                    { sellerId },
+                    { _id: projectId },
                     { $push: { Feedbacks : review }}
                     );
                 res.status(200).json({Message: "Review added successfully."});
