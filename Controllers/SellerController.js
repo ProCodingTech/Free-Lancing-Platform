@@ -157,6 +157,24 @@ const deleteMyAccount =  async (req, res) =>{
     }
 }
 
+const checkBalance = async (req, res) => {
+    const userId = res.locals.userId;
+    const userName = res.locals.name;
+
+    try {
+        const seller = await mongoSeller.findById(userId);
+
+        if (!seller) {
+            return res.status(404).json({ message: 'Seller Not Found.' });
+        }
+        const accountBalance = seller.AccountBalance;
+
+        res.status(200).json({userName, userId, AccountBalance: accountBalance });
+    } catch (error) {
+        console.error(error);
+    }
+};
+
 module.exports = {
     createSeller,
     Login,
@@ -164,5 +182,6 @@ module.exports = {
     getSellerById,
     getMyProfile,
     updateProfile,
-    deleteMyAccount
+    deleteMyAccount,
+    checkBalance
 }

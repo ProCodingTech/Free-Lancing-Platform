@@ -1,4 +1,3 @@
-const jwt = require('jsonwebtoken'); 
 const Chat = require('../Models/SellerChat.schema');
 
 const sendMessage = async (req, res) => {
