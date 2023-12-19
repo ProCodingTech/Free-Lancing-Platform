@@ -10,7 +10,7 @@ const chatRoutes = require("./Routes/ChatRoutes")
 const notifyRoutes = require("./Routes/NotificationRoutes")
 
 app.use(express.json());
-app.use(cors());
+app.use(cors("*"));
 
 app.listen(3100, ()=>{
     console.log("App is running at port 3100.");

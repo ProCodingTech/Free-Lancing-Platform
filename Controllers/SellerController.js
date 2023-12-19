@@ -23,11 +23,13 @@ const createSeller = async (req, res) => {
 };
 
 const Login = async (req, res) => {
+    let {Email,Password}  = req.body;
+    // console.log("Body:",req.body);
     try{
-        let { Email, Password } = req.body;
-        // console.log("Email: ",Email);
-        // console.log("Password: ",Password);
+        // console.log("Email:",Email);
+        // console.log("Password:",Password);
         let seller = await mongoSeller.findOne({Email});
+        // console.log("Seller:",seller);
         if(seller){
             if(Password === seller.Password){
                 let id = seller._id;
