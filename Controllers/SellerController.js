@@ -128,7 +128,7 @@ const updateProfile = async (req, res) => {
         let updated = await mongoSeller.findByIdAndUpdate(userId, data);
         // console.log("User Info: ",updated);
         if(updated){
-            res.status(200).json(updated);
+            res.status(200).json({Message:"User Updated Successfully.",updated});
         }
         else{
             res.status(404).json("Token or Database Error.");
@@ -177,6 +177,45 @@ const checkBalance = async (req, res) => {
     }
 };
 
+const withdrawAmount = async (req, res) => {
+    const userId = res.locals.userId;
+    const userName = res.locals.name;
+
+    let { withdrawAmnt } = req.body;
+
+    try {
+        const seller = await mongoSeller.findById(userId);
+
+        if (!seller) {
+            return res.status(404).json({ Message: 'Seller Not Found.' });
+        }
+
+        let accountBalance = seller.AccountBalance;
+
+        if (accountBalance < withdrawAmnt) {
+            return res.status(400).json({ Message: 'Not Enough money to withdraw.' });
+        }
+
+        accountBalance -= withdrawAmnt;
+
+        const updatedSeller = await mongoSeller.findByIdAndUpdate(userId, {
+            $set: { AccountBalance: accountBalance },
+            $push: {
+                Notifications: {
+                    message: `Amount of ${withdrawAmnt} PKR withdrawn from your account.`,
+                    createdAt: new Date()
+                }
+            }
+        }, { new: true });
+
+        res.status(200).json({ userName, userId, AccountBalance: updatedSeller.AccountBalance });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Error occurred while withdrawing amount.' });
+    }
+};
+
+
 module.exports = {
     createSeller,
     Login,
@@ -185,5 +224,6 @@ module.exports = {
     getMyProfile,
     updateProfile,
     deleteMyAccount,
-    checkBalance
+    checkBalance,
+    withdrawAmount
 }
