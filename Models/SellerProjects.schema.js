@@ -1,11 +1,16 @@
 const mongoose = require("mongoose")
 
 const reviews = new mongoose.Schema({
-    reviewerId:String,//User That has given review
+    reviewerId:String,
     reviewerName:String,
     Comment:String,
     Rating: { type: Number, default: 0 }
 });
+
+const buyer = new mongoose.Schema({
+    buyerId : String,
+    buyerName : String
+})
 
 const userSchema = mongoose.Schema({
     sellerId:String,
@@ -24,7 +29,7 @@ const userSchema = mongoose.Schema({
     Price: { type: Number, default: 0 },
     Revenue: { type: Number, default: 0 },
     Feedbacks: { type: [reviews], default: [] },
-    Buyer: {type : [String], default: [] }
+    Buyer: {type : [buyer], default: [] }
 },{timestamps:true})
 const model = mongoose.model("SellerProjects" , userSchema);
 module.exports = model;
