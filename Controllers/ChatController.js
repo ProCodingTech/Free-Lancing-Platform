@@ -4,7 +4,7 @@ const Customers = require("../Models/Customer.schema")
 const sendMessage = async (req, res) => {
     try {
         const receiverId = req.params.id;
-        const { message } = req.body;
+        const { sndMessage } = req.body;
 
         let userId = res.locals.userId;
         let FullName = res.locals.name;
@@ -12,13 +12,13 @@ const sendMessage = async (req, res) => {
         const chatMessage = new Chat({
             senderId: userId,
             senderName: FullName, 
-            receiverId,
-            message,
+            receiverId: receiverId,
+            message: sndMessage,
         });
 
         await chatMessage.save();
 
-        res.status(201).json({message: 'message deliver'});
+        res.status(201).json({Message: 'message deliver'});
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Server error' });

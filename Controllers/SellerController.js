@@ -32,13 +32,20 @@ const Login = async (req, res) => {
         // console.log("Seller:",seller);
         if(seller){
             if(Password === seller.Password){
-                let id = seller._id;
-                let name = seller.FullName;
-                let role = seller.Role;
+                let Blocked = seller.Blocked;
+                let Reason = seller.Reason;
+                if(!Blocked){
+                    let id = seller._id;
+                    let name = seller.FullName;
+                    let role = seller.Role;
 
-                let token = await jwt.sign({id, name, role}, process.env.SECRET_KEY, {expiresIn : '600h'});
+                    let token = await jwt.sign({id, name, role}, process.env.SECRET_KEY, {expiresIn : '600h'});
 
-                res.status(200).json({Success : 'true', "User Id" : id, token});
+                    res.status(200).json({Success : 'true', "User Id" : id, token});
+                }
+                else{
+                    res.status(400).json({Message : "You are Blocked By Admin.",Reason : Reason})
+                }
             }
             else{
                 res.status(400).json({Message : "Invalid Password"})
