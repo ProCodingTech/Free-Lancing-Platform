@@ -32,21 +32,48 @@ const createProject = async (req, res) => {
     }
 }
 
-const getMyProjects = async (req, res) =>{
-    try{
+// const getMyProjects = async (req, res) =>{
+//     try{
+//         let myId = res.locals.userId;
+//         const projects = await mongoProject.find({ sellerId: myId });
+//         if(projects){
+//             res.status(200).json(projects);
+//         }
+//         else{
+//             res.status(404).json({Message : "No Project Found."})
+//         }
+//     }
+//     catch(error){
+//         console.log(error);
+//     }
+// }
+
+const getMyProjects = async (req, res) => {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 5;
+
+    try {
         let myId = res.locals.userId;
-        const projects = await mongoProject.find({ sellerId: myId });
-        if(projects){
-            res.status(200).json(projects);
-        }
-        else{
-            res.status(404).json({Message : "No Project Found."})
-        }
-    }
-    catch(error){
+
+        const totalProjects = await mongoProject.countDocuments({ sellerId: myId });
+        const totalPages = Math.ceil(totalProjects / limit);
+
+        const projectsPerPage = await mongoProject
+            .find({ sellerId: myId })
+            .skip((page - 1) * limit)
+            .limit(limit);
+
+        res.status(200).json({
+            totalPages,
+            currentPage: page,
+            projects: projectsPerPage
+        });
+    } catch (error) {
         console.log(error);
+        res.status(500).json({ error: "Server Error" });
     }
-}
+};
+
 
 const getProjectById = async (req, res) => {
     try{

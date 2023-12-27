@@ -1,4 +1,5 @@
 const mongoSeller = require ("../Models/Seller.schema")
+const mongoProjects = require("../Models/SellerProjects.schema")
 const jwt = require ("jsonwebtoken")
 
 const createSeller = async (req, res) => {
@@ -62,28 +63,32 @@ const Login = async (req, res) => {
 }
 
 const searchUser = async (req, res) => {
-    try{
-        let {FullName} = req.query;
-        // console.log("Name: ", FullName);
-        let searchUser = await mongoSeller.findOne({ FullName: { $regex: new RegExp(FullName, "i") } });
-        // console.log("User Info: ",searchUser);
-        if(searchUser){
-            let name = searchUser.FullName;
-            let mail = searchUser.Email;
-            let contact = searchUser.Contact;
-            let rating = searchUser.TotalRating;
-            let expierence = searchUser.Experience;
-            let specialities = searchUser.Specialities.map(speciality => speciality);
-            res.status(200).json({Name: name,Email: mail ,Contact: contact, Rating: rating, Experience: expierence, Specialities: specialities})
+    try {
+        let { FullName } = req.query;
+        let searchUsers = await mongoSeller.find({ FullName: { $regex: new RegExp(FullName, "i") } });
+
+        if (searchUsers.length > 0) {
+            const users = searchUsers.map((user) => {
+                let Id = user._id;
+                let name = user.FullName;
+                let mail = user.Email;
+                let contact = user.Contact;
+                let rating = user.TotalRating;
+                let experience = user.Experience;
+                let specialities = user.Specialities.map((speciality) => speciality);
+                return { Id, Name: name, Email: mail, Contact: contact, Rating: rating, Experience: experience, Specialities: specialities };
+            });
+
+            res.status(200).json(users);
         }
-        else{
-            res.status(404).json("User Not Found.");
+        else {
+            res.status(404).json("Users Not Found.");
         }
-    }
-    catch(error){
+    } catch (error) {
         console.log(error);
+        res.status(500).json("Server Error.");
     }
-}
+};
 
 const getSellerById = async (req, res) => {
     try{
@@ -106,6 +111,25 @@ const getSellerById = async (req, res) => {
     }
     catch(error){
         console.log(error);
+    }
+}
+
+const getUserProjects = async (req, res)=>{
+    try{
+        let id = req.params.id;
+        // console.log("user id", id);
+        let projFound = await mongoProjects.find({ sellerId : id });
+        // console.log("prjs ",projFound);
+        if (projFound.length > 0) {
+            res.status(200).json({ projects: projFound });
+        }
+        else {
+            res.status(404).json({ message: 'No projects found for that user.' });
+        }
+    }
+    catch(error){
+        console.log(error);
+        res.status(500).json("Server Error.")
     }
 }
 
@@ -232,5 +256,6 @@ module.exports = {
     updateProfile,
     deleteMyAccount,
     checkBalance,
-    withdrawAmount
+    withdrawAmount,
+    getUserProjects
 }
