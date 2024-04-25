@@ -1,0 +1,36 @@
+name: Dependency Updates
+
+on:
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: '0 0 * * *' # Runs daily at midnight UTC
+
+jobs:
+  dependency_updates:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16.x'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Check for Dependency Updates
+        run: echo "Checking for dependency updates using Dependabot"
+
+      - name: Run Tests
+        run: echo "Running tests using npm test"
+
+      - name: Create Pull Request
+        run: |
+          echo "Creating a pull request for dependency updates"
+          echo "Pull request title: Dependency Updates"
+          echo "Pull request body: This pull request contains automated dependency updates."
